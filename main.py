@@ -9,17 +9,17 @@ df = df[df['rated'] == True]
 df.reset_index(drop=True, inplace=True)
 df = df.drop(labels=["rated"], axis=1)
 
+def returnThing(thing):
+    return 0.0 if thing=="black" else 1.0
 X = []
 y = []
 
-def returnThing(thing):
-    return 0.0 if thing=="black" else 1.0
-
 for i in range(5, len(df)):
-    X.append(float(df.iloc[i]['white_rating']))
-    X.append(float(df.iloc[i]['black_rating']))
+    X.append([
+        float(df.iloc[i]['white_rating']),
+        float(df.iloc[i]['black_rating'])
+    ])
     y.append(returnThing(df.iloc[i]["winner"]))
-
 
 X = torch.FloatTensor(X)
 y = torch.FloatTensor(y).reshape(-1, 1)
@@ -44,8 +44,8 @@ class Model(nn.Module):
         x = F.relu(self.fc4(x))
         x = F.relu(self.fc5(x))
         x = F.relu(self.fc6(x))
-        x = F.reult(self.fc7(x))
-        out = self.out(x)
+        x = F.relu(self.fc7(x))
+        out = pytorch.sigmoid(self.out(x))
 
 
 torch.manual_seed(41)
