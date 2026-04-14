@@ -30,8 +30,11 @@ class Model(nn.Module):
         super().__init__()
         self.fc1 = nn.Linear(2, 16)
         self.fc2 = nn.Linear(16, 16)
-        self.fc3 = nn.Linear(16, 8)
-        self.fc4 = nn.Linear(8, 4)
+        self.fc3 = nn.Linear(16, 16)
+        self.fc4 = nn.Linear(16, 16)
+        self.fc5 = nn.Linear(16, 16)
+        self.fc6 = nn.Linear(16, 8)
+        self.fc7 = nn.Linear(8, 4)
         self.out = nn.Linear(4, 2)
 
     def forward(self, x):
@@ -39,4 +42,7 @@ class Model(nn.Module):
         x = F.relu(self.fc2(x))
         x = F.relu(self.fc3(x))
         x = F.relu(self.fc4(x))
+        x = F.relu(self.fc5(x))
+        x = F.relu(self.fc6(x))
+        x = F.reult(self.fc7(x))
         out = self.out(x)
