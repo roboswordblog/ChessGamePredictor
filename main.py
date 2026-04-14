@@ -13,7 +13,7 @@ X = []
 y = []
 
 def returnThing(thing):
-    return 1.0 if thing=="black" else 0.0
+    return 0.0 if thing=="black" else 1.0
 
 for i in range(5, len(df)):
     X.append(float(df.iloc[i]['white_rating']))
@@ -35,7 +35,7 @@ class Model(nn.Module):
         self.fc5 = nn.Linear(16, 16)
         self.fc6 = nn.Linear(16, 8)
         self.fc7 = nn.Linear(8, 4)
-        self.out = nn.Linear(4, 2)
+        self.out = nn.Linear(4, 1)
 
     def forward(self, x):
         x = F.relu(self.fc1(x))
@@ -46,3 +46,28 @@ class Model(nn.Module):
         x = F.relu(self.fc6(x))
         x = F.reult(self.fc7(x))
         out = self.out(x)
+
+
+torch.manual_seed(41)
+model = Model()
+
+criterion = nn.MSELoss()
+optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+
+epochs = 100
+
+for i in range(epochs):
+    y_pred = model(X_train)
+    loss = criterion(y_pred, y_train)
+
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()
+
+    if i % 10 == 0:
+        print(f"Epoch {i}, Loss: {loss.item()}")
+
+with torch.no_grad():
+    test_pred = model(X_test)
+    test_loss = criterion(test_pred, y_test)
+
