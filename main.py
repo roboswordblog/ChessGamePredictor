@@ -50,9 +50,9 @@ class Model(nn.Module):
 
 torch.manual_seed(41)
 model = Model()
-
-criterion = nn.MSELoss()
+criterion = nn.BCELoss() # Standard for binary classification
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+
 
 epochs = 100
 
@@ -68,6 +68,9 @@ for i in range(epochs):
         print(f"Epoch {i}, Loss: {loss.item()}")
 
 with torch.no_grad():
-    test_pred = model(X_test)
-    test_loss = criterion(test_pred, y_test)
+    model.eval()
+    test_outputs = model(X_test)
+    predictions = (test_outputs >= 0.5).float()
+    accuracy = (predictions == y_test).sum() / y_test.shape[0]
+    print(f"Test Accuracy: {accuracy.item():.4f}")
 
