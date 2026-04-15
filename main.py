@@ -51,7 +51,8 @@ class Model(nn.Module):
         x = F.relu(self.fc5(x))
         x = F.relu(self.fc6(x))
         x = F.relu(self.fc7(x))
-        out = pytorch.sigmoid(self.out(x))
+        x = torch.sigmoid(self.out(x))
+        return x
 
 # Create the citerian, model, and optimizer
 torch.manual_seed(41)
@@ -60,7 +61,7 @@ criterion = nn.BCELoss() # Standard for binary classification
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
 # train it
-epochs = 1000
+epochs = 1500
 
 for i in range(epochs):
     # get result
@@ -86,6 +87,9 @@ with torch.no_grad():
 
 # get the accuracy, and then we might be able to finally give it some data
 with torch.no_grad():
-    test_outputs = model([float(input("White rating")), float(input("Black rating"))])
+    model.eval()
+    input_data = torch.tensor([[float(input("White rating: ")), float(input("Black rating: "))]])
+
+    test_outputs = model(input_data)
     prediction = (test_outputs >= 0.5).float()
-    print(prediction)
+    print("Black" if prediction == 0.0 else "White")
